@@ -11,6 +11,9 @@ import './index.scss'
 import FyMenu from "./menu";
 
 const { Header, Sider, Content } = Layout;
+import system from "../../../store/system";
+
+console.log(system.load)
 
 const Lay: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -20,12 +23,12 @@ const Lay: React.FC = () => {
 
   return (
     <Layout className="lay-container">
-      <Sider trigger={null} collapsible collapsed={collapsed}>
+      <Sider trigger={null} collapsible collapsed={collapsed} className="lay-header">
         <div className="logo" />
         <FyMenu />
       </Sider>
       <Layout className="site-layout">
-        <Header style={{ padding: 0, background: colorBgContainer }}>
+        <Header style={{ padding: 0, background: colorBgContainer }} className="lay-header">
           {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
             className: 'trigger',
             onClick: () => setCollapsed(!collapsed),

@@ -12,7 +12,8 @@
     "antd": "^5.3.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.10.0"
+    "react-router-dom": "^6.10.0",
+    "valtio": "^1.10.4"
   },
   "devDependencies": {
     "@types/node": "^18.15.11",
