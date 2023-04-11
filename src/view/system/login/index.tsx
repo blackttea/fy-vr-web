@@ -1,24 +1,43 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Form, Input } from 'antd';
+import { loginApi } from "../../../api/user";
+import {setLocal} from "../../../utils/cache/useSession";
+import {Route, Routes} from "react-router-dom";
+import Home from "../../Home";
 
 const App: React.FC = () => {
-  const onFinish = (values: any) => {
-    console.log('Received values of form: ', values);
+  const [form, setForm] = useState({
+    username: "admin",
+    password: "admin",
+  })
+  const onFinish = () => {
+    const data = {
+      username: form.username,
+      password: form.password,
+      code: "V3Admin"
+    }
+    loginApi(data).then((res: any) => {
+      if (res.code === 200) {
+        setLocal("token", res.data.token)
+      }
+    })
   };
 
   return (
     <Form
-      name="normal_login"
+      name="form"
       className="login-form"
-      initialValues={{ remember: true }}
+      initialValues={ form }
       onFinish={onFinish}
     >
       <Form.Item
         name="username"
         rules={[{ required: true, message: 'Please input your Username!' }]}
       >
-        <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Username" />
+        <Input
+          onChange={ (e) => { setForm({ ...form, username: e.target.value }) } }
+          defaultValue={ form.username } prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Username" />
       </Form.Item>
       <Form.Item
         name="password"
@@ -27,6 +46,8 @@ const App: React.FC = () => {
         <Input
           prefix={<LockOutlined className="site-form-item-icon" />}
           type="password"
+          onChange={ (e) => { setForm({ ...form, password: e.target.value }) } }
+          defaultValue={ form.password }
           placeholder="Password"
         />
       </Form.Item>
@@ -50,4 +71,7 @@ const App: React.FC = () => {
   );
 };
 
+// <Routes>
+//   <Route path={"/home"} element={ <Home /> } />
+// </Routes>
 export default App;

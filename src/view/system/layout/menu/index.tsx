@@ -1,70 +1,82 @@
 import React, { useState } from 'react';
 import {
   AppstoreOutlined,
-  ContainerOutlined,
-  DesktopOutlined,
+  CalendarOutlined,
+  LinkOutlined,
   MailOutlined,
-  PieChartOutlined,
+  SettingOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
 } from '@ant-design/icons';
-import type { MenuProps } from 'antd';
-import { Menu } from 'antd';
+import {Button, Divider, Menu, Switch} from 'antd';
+import type { MenuProps, MenuTheme } from 'antd/es/menu';
+import system from "../../../../store/system";
+import {useSnapshot} from "valtio";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
 function getItem(
   label: React.ReactNode,
-  key: React.Key,
+  key?: React.Key | null,
   icon?: React.ReactNode,
   children?: MenuItem[],
-  type?: 'group',
 ): MenuItem {
   return {
     key,
     icon,
     children,
     label,
-    type,
   } as MenuItem;
 }
 
 const items: MenuItem[] = [
-  getItem('Option 1', '1', <PieChartOutlined />),
-  getItem('Option 2', '2', <DesktopOutlined />),
-  getItem('Option 3', '3', <ContainerOutlined />),
-
-  getItem('Navigation One', 'sub1', <MailOutlined />, [
-    getItem('Option 5', '5'),
-    getItem('Option 6', '6'),
+  getItem('Navigation One', '1', <MailOutlined />),
+  getItem('Navigation Two', '2', <CalendarOutlined />),
+  getItem('Navigation Two', 'sub1', <AppstoreOutlined />, [
+    getItem('Option 3', '3'),
+    getItem('Option 4', '4'),
+    getItem('Submenu', 'sub1-2', null, [getItem('Option 5', '5'), getItem('Option 6', '6')]),
+  ]),
+  getItem('Navigation Three', 'sub2', <SettingOutlined />, [
     getItem('Option 7', '7'),
     getItem('Option 8', '8'),
-  ]),
-
-  getItem('Navigation Two', 'sub2', <AppstoreOutlined />, [
     getItem('Option 9', '9'),
     getItem('Option 10', '10'),
-
-    getItem('Submenu', 'sub3', null, [getItem('Option 11', '11'), getItem('Option 12', '12')]),
   ]),
+  getItem(
+    <a href="https://ant.design" target="_blank" rel="noopener noreferrer">
+      Ant Design
+    </a>,
+    'link',
+    <LinkOutlined />,
+  ),
 ];
 
-const FyMenu: React.FC = () => {
-  const [collapsed, setCollapsed] = useState(false);
-
+const App: React.FC = () => {
   const toggleCollapsed = () => {
-    setCollapsed(!collapsed);
+    system.collapsed = !system.collapsed
+  };
+  const { mode, theme, collapsed } = useSnapshot(system)
+
+  const changeMode = (value: boolean) => {
+    system.mode = value ? 'vertical' : 'inline';
+  };
+
+  const changeTheme = (value: boolean) => {
+    system.theme = value ? 'dark' : 'light';
   };
 
   return (
-    <div style={{ width: '100%' }}>
-      <Menu
-        defaultSelectedKeys={['1']}
-        defaultOpenKeys={['sub1']}
-        mode="inline"
-        theme="dark"
-        items={items}
-      />
-    </div>
+    <Menu
+      style={{ height: '100%' }}
+      defaultSelectedKeys={['1']}
+      defaultOpenKeys={['sub1']}
+      mode={mode}
+      theme={theme}
+      items={items}
+      inlineCollapsed={collapsed}
+    />
   );
 };
 
-export default FyMenu
+export default App;
