@@ -12,6 +12,7 @@ import {Button, Divider, Menu, Switch} from 'antd';
 import type { MenuProps, MenuTheme } from 'antd/es/menu';
 import system from "../../../../store/system";
 import {useSnapshot} from "valtio";
+import {useNavigate} from "react-router-dom";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -65,16 +66,21 @@ const App: React.FC = () => {
   const changeTheme = (value: boolean) => {
     system.theme = value ? 'dark' : 'light';
   };
+  const navigate = useNavigate()
+  const selectMenu = (data: any) => {
+    navigate('/home')
+  }
 
   return (
     <Menu
-      style={{ height: '100%' }}
+      style={{ height: 'calc(100% - 85px)', width: "100%" }}
       defaultSelectedKeys={['1']}
       defaultOpenKeys={['sub1']}
       mode={mode}
       theme={theme}
       items={items}
       inlineCollapsed={collapsed}
+      onSelect={ selectMenu }
     />
   );
 };

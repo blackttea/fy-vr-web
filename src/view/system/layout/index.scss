@@ -5,6 +5,35 @@
   .layout-side {
     width: 200px;
     height: 100%;
-    background: #888888;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    background: #ffffff;
+    .logo-icon {
+      height: 85px;
+      width: 100%;
+    }
+  }
+  .layout-main {
+    width: auto;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    flex: 1;
+    background: #f2f3f5;
+    .layout-header {
+      width: 100%;
+      height: 85px;
+      background: #ffffff;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.062745098), 0 0 3px 0 rgba(0, 0, 0, 0.062745098);
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+    }
+    .layout-content {
+      width: 100%;
+      height: calc(100% - 101px) !important;
+      padding: 8px;
+    }
   }
 }

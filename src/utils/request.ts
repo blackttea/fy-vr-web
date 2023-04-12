@@ -1,6 +1,6 @@
 import axios, { type AxiosInstance, type AxiosRequestConfig } from "axios"
 import { message } from "antd"
-import { getSession } from "./cache/useSession"
+import {getLocal} from "./cache/useSession"
 // @ts-ignore
 import { get } from "lodash-es"
 
@@ -120,7 +120,7 @@ function createRequestFunction(service: AxiosInstance) {
     const configDefault = {
       headers: {
         // 携带 Token
-        Authorization: "token " + getSession("token", false),
+        Authorization: "token " + getLocal("token", false),
         "Content-Type": get(config, "headers.Content-Type", "application/json")
       },
       timeout: 600000,
@@ -128,7 +128,7 @@ function createRequestFunction(service: AxiosInstance) {
       data: {}
     }
     const configOuter = Object.assign(configDefault, config)
-    if (getSession("token", false)) configOuter.headers.Authorization = "token " + getSession("token", false)
+    if (getLocal("token", false)) configOuter.headers.Authorization = "token " + getLocal("token", false)
     return service(configOuter)
   }
 }
