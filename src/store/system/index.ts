@@ -4,6 +4,7 @@ import {Menu} from "../../type/menu";
 import useDeepClone from "../../hook/useDeepClone";
 import useFormatTree from "../../hook/useFormatTree";
 const view = import.meta.glob("../../view/**/**.tsx")
+const _menuPrefix = "../../view/"
 
 interface SystemType {
   menu: Array<Menu>
@@ -73,8 +74,10 @@ const getMenu = async () => {
         }
         const reFormData = (data: any): void => {
           if (!data["component"] || data["component"] === "../layout/indexCopy.vue") data["children"] = []
-          data["component"] = view[data["component"]] || data["component"]
+          data["component"] = view[`${_menuPrefix}${data["component"]}.tsx`] || data["component"]
           data["meta"] = {}
+          data["key"] = data["title"]
+          data["label"] = data["title"]
           const showList = ["hidden", "title", "svgIcon", "elIcon"]
           for (const item of showList) if (data[item] !== undefined) data["meta"][item] = data[item]
         }
@@ -106,6 +109,7 @@ const getMenu = async () => {
       getMenu()
       system.menu.length = 0
       system.menu = [...menu]
+      debugger
     }
   })
 }

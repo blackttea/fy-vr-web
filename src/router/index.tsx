@@ -3,7 +3,7 @@ import {Outlet, Navigate, useRoutes, Route} from "react-router-dom";
 
 import Layout from "../view/system/layout";
 import Login from "../view/system/login";
-import Home from "../view/Home";
+import Home from "../view/dashboard";
 
 const LayoutComponent = ({children}: any) => {
   return (

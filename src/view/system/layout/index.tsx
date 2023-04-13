@@ -5,7 +5,7 @@ import system from "../../../store/system";
 import {useSnapshot} from "valtio";
 import NavigationBar from "./Header/NavigationBar"
 import TagsView from "./Header/TagsView"
-import Home from "../../Home";
+import Home from "../../dashboard";
 import { Routes, Route, Outlet } from "react-router-dom";
 
 const App: React.FC = () => {

@@ -4,7 +4,9 @@ import path, { resolve } from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react()
+  ],
   resolve: {
     alias: {
       /** @ 符号指向 src 目录 */

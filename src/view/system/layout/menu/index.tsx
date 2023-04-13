@@ -53,6 +53,9 @@ const items: MenuItem[] = [
   ),
 ];
 
+console.log(system.menu)
+console.log(items)
+
 const App: React.FC = () => {
   const toggleCollapsed = () => {
     system.collapsed = !system.collapsed
