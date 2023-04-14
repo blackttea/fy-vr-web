@@ -13,6 +13,8 @@ import type { MenuProps, MenuTheme } from 'antd/es/menu';
 import system from "../../../../store/system";
 import {useSnapshot} from "valtio";
 import {useNavigate} from "react-router-dom";
+import SvgIcon from "../../../../components/SvgIcon";
+import useDfs from "../../../../hook/useDfs";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -60,7 +62,17 @@ const App: React.FC = () => {
   const toggleCollapsed = () => {
     system.collapsed = !system.collapsed
   };
-  const { mode, theme, collapsed } = useSnapshot(system)
+  const setIcon = (item: any) => {
+    const tem = item.svgIcon
+    if (item.svgIcon) item.icon = <SvgIcon icon={ tem } />
+    delete item.svgIcon
+    const show = ["key", "icon", "children", "label"]
+    for (let key in item) if (!show.includes(key)) delete item[key]
+  }
+
+  const { mode, theme, collapsed, menu } = useSnapshot(system)
+  useDfs(menu, setIcon)
+
 
   const changeMode = (value: boolean) => {
     system.mode = value ? 'vertical' : 'inline';
@@ -70,8 +82,9 @@ const App: React.FC = () => {
     system.theme = value ? 'dark' : 'light';
   };
   const navigate = useNavigate()
+
   const selectMenu = (data: any) => {
-    navigate('/home')
+    navigate(data.key)
   }
 
   return (
@@ -81,7 +94,7 @@ const App: React.FC = () => {
       defaultOpenKeys={['sub1']}
       mode={mode}
       theme={theme}
-      items={items}
+      items={menu}
       inlineCollapsed={collapsed}
       onSelect={ selectMenu }
     />

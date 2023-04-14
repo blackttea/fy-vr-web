@@ -3,29 +3,40 @@ import {getMenuApi, getUserInfoApi} from "../../api/user";
 import {Menu} from "../../type/menu";
 import useDeepClone from "../../hook/useDeepClone";
 import useFormatTree from "../../hook/useFormatTree";
+import {MenuProps} from "antd/es/menu";
+import Login from "../../view/system/login";
+import Layout from "../../view/system/layout";
+import React from "react";
+import {RouteConfig} from "../../router";
 const view = import.meta.glob("../../view/**/**.tsx")
 const _menuPrefix = "../../view/"
 
+type MenuItem = Required<MenuProps>['items'][number];
+
 interface SystemType {
-  menu: Array<Menu>
+  menu: any
   collapsed: boolean
   mode: "vertical" | "inline"
   theme: "dark" | "light"
   tags: Array<any>
-  activeTag: string,
-  userInfo: any,
+  activeTag: string
+  userInfo: any
   menuPer: any
+  showMenu: MenuItem[],
+  routers: any
 }
 
 const system: SystemType = proxy({
   menu: [],
   collapsed: false,
-  mode: "vertical",
+  mode: "inline",
   theme: "light",
   tags: [1, 2, 3, 4, 5, 6],
   activeTag: "1",
   userInfo: {},
-  menuPer: {}
+  menuPer: {},
+  showMenu: [],
+  routers: []
 })
 
 const getMenu = async () => {
@@ -34,6 +45,7 @@ const getMenu = async () => {
       system.userInfo = res.data
     }
   })
+  const _router: Menu[] = []
   const menuList: Menu[] = []
   const parentList: Menu[] = []
   const menu: Menu[]  = []
@@ -73,11 +85,12 @@ const getMenu = async () => {
           }
         }
         const reFormData = (data: any): void => {
-          if (!data["component"] || data["component"] === "../layout/indexCopy.vue") data["children"] = []
+          if (!data["component"] || data["component"] === "../layout/index") data["children"] = []
           data["component"] = view[`${_menuPrefix}${data["component"]}.tsx`] || data["component"]
           data["meta"] = {}
-          data["key"] = data["title"]
+          data["key"] = data["path"]
           data["label"] = data["title"]
+          data["element"] = data["component"]
           const showList = ["hidden", "title", "svgIcon", "elIcon"]
           for (const item of showList) if (data[item] !== undefined) data["meta"][item] = data[item]
         }
@@ -94,6 +107,7 @@ const getMenu = async () => {
           if (n.id) system.menuPer[n.id] = option
         }
         const menuRoute = useFormatTree(m, "id", "parentId", "children", reFormData, undefined)
+        const rMenuRoute = useFormatTree(m, "id", "parentId", "children", reFormData, undefined)
         for (const item of menuRoute) menu.push(item)
 
         const reFormData1 = (data: any): void => {
@@ -108,8 +122,9 @@ const getMenu = async () => {
       }
       getMenu()
       system.menu.length = 0
-      system.menu = [...menu]
+      system.routers[1].children = [...useDeepClone(menu)]
       debugger
+      system.menu = [...menu]
     }
   })
 }

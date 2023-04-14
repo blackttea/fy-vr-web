@@ -4,7 +4,6 @@ import { Button, Checkbox, Form, Input } from 'antd';
 import {getUserInfoApi, loginApi} from "../../../api/user";
 import {setLocal} from "../../../utils/cache/useSession";
 import {Route, Routes, useNavigate} from "react-router-dom";
-import Home from "../../Home";
 import "./index.scss"
 import { getMenu } from "../../../store/system";
 

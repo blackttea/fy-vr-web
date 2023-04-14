@@ -1,7 +1,6 @@
 import { message } from "antd";
 import { useEffect } from "react";
 import { matchRoutes, useLocation, useNavigate } from "react-router-dom";
-import { routers } from "./index";
 import {getLocal} from "../utils/cache/useSession";
 import system from "../store/system";
 import {getMenu} from "../store/system";
@@ -9,7 +8,7 @@ import {getMenu} from "../store/system";
 const AuthRoute = ({ children, auth }: any) => {
   const navigate = useNavigate();
   const token = getLocal("token", false);
-  const match = matchRoutes(routers, location);
+  const match = matchRoutes(system.routers, location);
 
   const isExist = match?.some((item) => item.pathname == location.pathname);
   useEffect(() => {

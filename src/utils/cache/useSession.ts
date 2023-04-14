@@ -20,9 +20,14 @@ const setLocal = (name: string, value: any) => {
   else localStorage.setItem(name, JSON.stringify(value));
 }
 
+const clearLocal = (name: string) => {
+  localStorage.removeItem(name)
+}
+
 export {
   getSession,
   setSession,
   getLocal,
-  setLocal
+  setLocal,
+  clearLocal
 }

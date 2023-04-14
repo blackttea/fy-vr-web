@@ -4,14 +4,16 @@ import {
   Route,
   Routes,
 } from "react-router-dom";
-import {RouteConfig, routers} from "./router";
+import {RouteConfig} from "./router";
 import AuthRoute from "./router/AuthRoute";
 import "./App.css"
+import system from "./store/system";
+import {useSnapshot} from "valtio";
+import {initRouter} from "./router";
 
 const App = () => {
-
-  const loginState = "login";
-
+  initRouter()
+  const { routers } = useSnapshot(system)
   // 处理我们的routers
   const RouteAuthFun = (
     (routeList: RouteConfig[]) => {
