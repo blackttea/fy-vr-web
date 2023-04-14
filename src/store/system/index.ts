@@ -123,7 +123,6 @@ const getMenu = async () => {
       getMenu()
       system.menu.length = 0
       system.routers[1].children = [...useDeepClone(menu)]
-      debugger
       system.menu = [...menu]
     }
   })
