@@ -6,6 +6,9 @@ import Login from "../view/system/login";
 import Home from "../view/dashboard";
 import useDeepClone from "../hook/useDeepClone";
 
+const view = import.meta.glob("../view/**/**.tsx")
+const view1 = import.meta.glob("../view/**/**.tsx", {eager: true})
+
 // const LayoutComponent = ({children}: any) => {
 //   return (
 //     <Suspense fallback = {""}>
@@ -13,6 +16,13 @@ import useDeepClone from "../hook/useDeepClone";
 //     </Suspense>
 //   );
 // };
+
+//懒加载组件
+// function lazyLoad(path) {
+// //懒加载
+//   let Module = React.lazy(() => import(path));
+//   return <Module />
+// }
 
 export interface RouteConfig {
   path: string;
@@ -24,13 +34,6 @@ export interface RouteConfig {
 
 const routers = [
   {path: "/login", element: <Login />, auth: false},
-  {
-    path: "/",
-    element: <Layout />,
-    auth: true,
-    children: [
-    ],
-  },
 ];
 
 export const initRouter = () => {

@@ -11,7 +11,7 @@ const useDataType = (data: any, type = ""): string | boolean => {
   if (type) {
     return t2 === type
   } else {
-    return t1[1].toLowerCase()
+    return t1[0].toLowerCase()
   }
 }
 

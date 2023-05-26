@@ -12,7 +12,7 @@ import {Button, Divider, Menu, Switch} from 'antd';
 import type { MenuProps, MenuTheme } from 'antd/es/menu';
 import system from "../../../../store/system";
 import {useSnapshot} from "valtio";
-import {useNavigate} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import SvgIcon from "../../../../components/SvgIcon";
 import useDfs from "../../../../hook/useDfs";
 
@@ -32,32 +32,6 @@ function getItem(
   } as MenuItem;
 }
 
-const items: MenuItem[] = [
-  getItem('Navigation One', '1', <MailOutlined />),
-  getItem('Navigation Two', '2', <CalendarOutlined />),
-  getItem('Navigation Two', 'sub1', <AppstoreOutlined />, [
-    getItem('Option 3', '3'),
-    getItem('Option 4', '4'),
-    getItem('Submenu', 'sub1-2', null, [getItem('Option 5', '5'), getItem('Option 6', '6')]),
-  ]),
-  getItem('Navigation Three', 'sub2', <SettingOutlined />, [
-    getItem('Option 7', '7'),
-    getItem('Option 8', '8'),
-    getItem('Option 9', '9'),
-    getItem('Option 10', '10'),
-  ]),
-  getItem(
-    <a href="https://ant.design" target="_blank" rel="noopener noreferrer">
-      Ant Design
-    </a>,
-    'link',
-    <LinkOutlined />,
-  ),
-];
-
-console.log(system.menu)
-console.log(items)
-
 const App: React.FC = () => {
   const toggleCollapsed = () => {
     system.collapsed = !system.collapsed
@@ -66,11 +40,11 @@ const App: React.FC = () => {
     const tem = item.svgIcon
     if (item.svgIcon) item.icon = <SvgIcon icon={ tem } />
     delete item.svgIcon
-    const show = ["key", "icon", "children", "label"]
+    const show = ["key", "icon", "children", "label", "path"]
     for (let key in item) if (!show.includes(key)) delete item[key]
   }
 
-  const { mode, theme, collapsed, menu } = useSnapshot(system)
+  const { mode, theme, collapsed, menu, tags, cRouter, activeMenu } = useSnapshot(system)
   useDfs(menu, setIcon)
 
 
@@ -84,13 +58,27 @@ const App: React.FC = () => {
   const navigate = useNavigate()
 
   const selectMenu = (data: any) => {
-    navigate(data.key)
+    const path = data.keyPath.reverse().join('/')
+    const index = cRouter.findIndex((c: any) => {
+      return c.key === path
+    })
+    const tagIndex = tags.findIndex((t) => { return t.path === path } )
+    if (tagIndex < 0) {
+      system.tags.push({
+        name: cRouter[index].label,
+        path: path
+      })
+    }
+    system.activeTag = path
+    if (data.keyPath.length > 1) {
+      navigate(path)
+    } else navigate(data.key)
   }
 
   return (
     <Menu
       style={{ height: 'calc(100% - 85px)', width: "100%" }}
-      defaultSelectedKeys={['1']}
+      defaultSelectedKeys={system.activeMenu}
       defaultOpenKeys={['sub1']}
       mode={mode}
       theme={theme}

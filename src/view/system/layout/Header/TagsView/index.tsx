@@ -6,14 +6,26 @@ import "./index.scss"
 import { useSnapshot } from "valtio";
 import system from "../../../../../store/system";
 import { Space, Tag } from 'antd';
+import {it} from "node:test";
+import {useNavigate} from "react-router-dom";
 
 const TagsView: React.FC = () => {
   const { tags, activeTag } = useSnapshot(system)
 
+  const navigate = useNavigate()
   const closeTag = (item: any) => {
-    const index = system.tags.indexOf(item)
+    const index = system.tags.findIndex((tag) => {
+      return tag.path === item.path
+    })
     system.tags.splice(index, 1)
   }
+
+  const toRoute = (item: any): any => {
+    system.activeTag = item.path
+    system.activeMenu = [item.path]
+    navigate(item.path)
+  }
+
   return (
     <div className="layout-tag">
       <Space size={[0, 8]} wrap>
@@ -21,13 +33,13 @@ const TagsView: React.FC = () => {
           <Tag
             closable
             className="tag-item"
-            key={ item }
-            onClick={ () => system.activeTag = item }
-            color={ activeTag == item ? "#55acee" : "" }
+            key={ item.path }
+            onClick={ () => toRoute(item) }
+            color={ activeTag == item.path ? "#55acee" : "" }
             onClose={() => closeTag(item)}
             icon={ <TagFilled style={{  color: "#FFFFFF" }} /> }
           >
-            { item }
+            { item.name }
           </Tag>)
         }
       </Space>

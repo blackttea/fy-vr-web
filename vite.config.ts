@@ -30,7 +30,8 @@ export default defineConfig({
     /** 接口代理 */
     proxy: {
       "/api": {
-        target: "http://localhost:8000",
+        // target: "http://0.0.0.0:8000",
+        target: "https://test.nmxgzs.cn",
         // target: "https://mock.mengxuegu.com/mock/63218b5fb4c53348ed2bc212/api/v1",
         ws: true,
         /** 是否允许跨域 */

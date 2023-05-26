@@ -8,7 +8,10 @@ import Login from "../../view/system/login";
 import Layout from "../../view/system/layout";
 import React from "react";
 import {RouteConfig} from "../../router";
-const view = import.meta.glob("../../view/**/**.tsx")
+import useDataType from "../../hook/useDataType";
+import useTreeToArray from "../../hook/useTreeToArray";
+import useFindPath from "../../hook/useFindPath";
+const view = import.meta.glob("../../view/**/**.tsx", { eager: true })
 const _menuPrefix = "../../view/"
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -22,8 +25,10 @@ interface SystemType {
   activeTag: string
   userInfo: any
   menuPer: any
-  showMenu: MenuItem[],
+  showMenu: MenuItem[]
   routers: any
+  cRouter: any
+  activeMenu: string[]
 }
 
 const system: SystemType = proxy({
@@ -31,12 +36,14 @@ const system: SystemType = proxy({
   collapsed: false,
   mode: "inline",
   theme: "light",
-  tags: [1, 2, 3, 4, 5, 6],
+  tags: [],
   activeTag: "1",
   userInfo: {},
   menuPer: {},
   showMenu: [],
-  routers: []
+  routers: [],
+  cRouter: [],
+  activeMenu: []
 })
 
 const getMenu = async () => {
@@ -55,7 +62,7 @@ const getMenu = async () => {
   return getMenuApi().then((res: any) => {
     if (res.code === 200) {
       tempMenu = res.data
-      const getMenu = async () => {
+      const getMenus = async () => {
         m.length = 0
         const getParentList = () => {
           const um = system.userInfo.menu
@@ -85,14 +92,9 @@ const getMenu = async () => {
           }
         }
         const reFormData = (data: any): void => {
-          if (!data["component"] || data["component"] === "../layout/index") data["children"] = []
-          data["component"] = view[`${_menuPrefix}${data["component"]}.tsx`] || data["component"]
-          data["meta"] = {}
+          if (!data["component"]) data["children"] = []
           data["key"] = data["path"]
           data["label"] = data["title"]
-          data["element"] = data["component"]
-          const showList = ["hidden", "title", "svgIcon", "elIcon"]
-          for (const item of showList) if (data[item] !== undefined) data["meta"][item] = data[item]
         }
 
         menu.length = 0
@@ -120,9 +122,33 @@ const getMenu = async () => {
           return a.seq - b.seq
         })
       }
-      getMenu()
+      getMenus()
+
+      const getRoute = () => {
+        const r = []
+        for (let men of m) {
+          const item = useDeepClone(men)
+          if (item["component"]) {
+            // @ts-ignore
+            item["element"] = view[`${_menuPrefix}${item["component"]}.tsx`]?.default || item["component"]
+            item["key"] = item["path"]
+            item["label"] = item["title"]
+            const path = useFindPath(menu, item.id)
+            let p = ""
+            for (let a of path) {
+              if (path.length > 1 && a.component) {
+                p += `/${a["path"]}`
+              } else p += a.path
+            }
+            item["key"] = p
+            item["path"] = p.replace("/", "")
+            r.push(item)
+          }
+        }
+        system.cRouter = r
+      }
+      getRoute()
       system.menu.length = 0
-      system.routers[1].children = [...useDeepClone(menu)]
       system.menu = [...menu]
     }
   })

@@ -7,12 +7,15 @@ export declare interface Menu {
   common: boolean | string
   redirect: string
   id?: number
+  key?: any
+  label?: any
   svgIcon?: string
   elIcon?: string
   seq: number | undefined
   parentId: number | null | undefined
   permission: Array<string>
   children?: Array<object>
+  element?: any
 }
 
 export declare interface iconList {
